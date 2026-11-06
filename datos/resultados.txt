@@ -1,0 +1,3 @@
+﻿# Archivo de resultados de calidad — RedRío / La Iguaná
+# nombre_quebrada|fecha_campana|temporada|nombre_punto|valor_ica|categoria_ica|fuente
+# Vacío para capturas 10.4

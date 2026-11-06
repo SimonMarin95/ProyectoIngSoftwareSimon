@@ -1,0 +1,25 @@
+# DATOS DE DEMOSTRACIÓN / PRUEBA — NO son mediciones oficiales de RedRío
+# Las CATEGORÍAS siguen el diagnóstico del documento del proyecto (La Iguaná):
+#   Parte alta: aceptable (seis campañas)
+#   Parte media: regular
+#   Parte baja: mala (cuatro) y muy mala (dos)
+# Fechas y valores numéricos del ICA: ILUSTRATIVOS para probar el programa.
+# nombreQuebrada|fechaCampana|temporada|nombrePunto|valorIca|categoriaIca|fuente
+La Iguaná|15/02/2023|seca|parte alta|0.72|aceptable|RedRío
+La Iguaná|15/02/2023|seca|parte media|0.55|regular|RedRío
+La Iguaná|15/02/2023|seca|parte baja|0.38|mala|RedRío
+La Iguaná|15/10/2023|lluvias|parte alta|0.70|aceptable|RedRío
+La Iguaná|15/10/2023|lluvias|parte media|0.52|regular|RedRío
+La Iguaná|15/10/2023|lluvias|parte baja|0.35|mala|RedRío
+La Iguaná|15/02/2024|seca|parte alta|0.71|aceptable|RedRío
+La Iguaná|15/02/2024|seca|parte media|0.54|regular|RedRío
+La Iguaná|15/02/2024|seca|parte baja|0.40|mala|RedRío
+La Iguaná|15/10/2024|lluvias|parte alta|0.69|aceptable|RedRío
+La Iguaná|15/10/2024|lluvias|parte media|0.50|regular|RedRío
+La Iguaná|15/10/2024|lluvias|parte baja|0.22|muy mala|RedRío
+La Iguaná|15/02/2025|seca|parte alta|0.73|aceptable|RedRío
+La Iguaná|15/02/2025|seca|parte media|0.56|regular|RedRío
+La Iguaná|15/02/2025|seca|parte baja|0.36|mala|RedRío
+La Iguaná|15/10/2025|lluvias|parte alta|0.70|aceptable|RedRío
+La Iguaná|15/10/2025|lluvias|parte media|0.51|regular|RedRío
+La Iguaná|15/10/2025|lluvias|parte baja|0.20|muy mala|RedRío

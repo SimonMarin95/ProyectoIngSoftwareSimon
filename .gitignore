@@ -1,0 +1,20 @@
+# Compilados
+bin/
+*.class
+*.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.classpath
+*.project
+.settings/
+
+# Sistema
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Temporal de extracción de requisitos (opcional)
+requerimiento/extracto_requisitos.txt
