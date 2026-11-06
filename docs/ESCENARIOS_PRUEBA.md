@@ -1,94 +1,82 @@
-# Escenarios de captura — Resultado de calidad (10.4 / 10.8)
+# Escenarios de prueba y capturas
 
-Alineados al **mockup Figura 9.3** (opciones Guardar, Buscar, Listar, Corregir, Eliminar, Deshacer, Volver).
+## Capturas de Quebradas — Figuras 10.1 a 10.6
 
-## Preparación
+La imagen del documento del proyecto ubica estos seis espacios en la sección **10.3, “Capturas del programa de Quebrada”**. La guía general del curso describe la misma entrega en **10.8, “Las seis capturas”**. Pega una captura real de consola en cada espacio, conserva el orden y los pies de figura.
+
+### Preparación de una ejecución limpia
+
+Desde la raíz del proyecto, si ya existe un archivo de quebradas, conserva primero una copia con fecha. Después deja solo la línea de comentario para que el escenario empiece sin registros:
 
 ```powershell
-cd "C:\Users\Web Develop\Desktop\SimonProyect"
-$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.0.21.9-hotspot"
-$env:Path = "$env:JAVA_HOME\bin;$env:Path"
+if (Test-Path datos\quebradas.txt) {
+    $copia = "datos\quebradas-respaldo-" + (Get-Date -Format "yyyyMMdd-HHmmss") + ".txt"
+    Copy-Item datos\quebradas.txt $copia
+}
+Set-Content -Path datos\quebradas.txt -Value "# quebradas — nombre_quebrada|numero_puntos" -Encoding ascii
 
-# Deje datos/resultados.txt vacío (solo líneas #)
-javac -encoding UTF-8 -d bin src\Main.java src\integracion\*.java src\resultado\*.java
+javac -encoding UTF-8 -d bin src\Main.java src\PruebaEscenariosQuebrada.java src\integracion\*.java src\quebrada\*.java src\resultado\*.java
 java -cp bin Main
 ```
 
-En el menú principal (Figura 9.1): opción **2** (Resultados).
+En el menú principal, usa la opción **1 (Quebradas)**. Para la primera figura, registra en este orden:
 
-Use quebrada **La Iguaná**.
+1. `La Iguaná`, `3`
+2. `La Presidenta`, `2`
+3. `Santa Elena`, `3`
 
----
+La lista debe mostrar `Total de puntos: 8`.
 
-## Figura 10.7 — Guardar tres y listar
+### Figura 10.1 — Crear tres quebradas y listarlas
 
-1. Opción **1 Guardar**
-   - `nombre_quebrada`: La Iguaná
-   - `fecha_campana`: 15/02/2024
-   - `temporada`: seca
-   - `nombre_punto`: parte alta
-   - `valor_ica`: 0,80
-   - `categoria_ica`: aceptable
-2. Opción **1** otra vez → `parte media` / `0,60` / `regular` (misma fecha)
-3. Opción **1** otra vez → `parte baja` / `0,40` / `mala`
-4. Opción **3 Listar** → ENTER
+Después de registrar las tres, selecciona **3 Listar**. Captura el encabezado `QUEBRADAS`, el listado con las tres filas y el total de puntos. El archivo debe tener tres registros.
 
-**Captura:** listado con columnas del diccionario + `Promedio del ICA: 0,60`.
+### Figura 10.2 — Rechazar nombre repetido
 
----
+Selecciona **1 Guardar** e intenta registrar `La Iguaná` otra vez, con cualquier número válido de puntos.
 
-## Figura 10.8 — Duplicado rechazado
+Captura el mensaje `Esa quebrada ya está registrada (RF-02 · CA-01.3)` y el listado que conserva solo tres quebradas.
 
-1. Opción **1 Guardar** con los mismos datos de `parte media` / 15/02/2024.
+### Figura 10.3 — Eliminar la quebrada del medio sin huecos
 
-**Captura:** caja MENSAJE  
-`(!) Ese punto ya tiene resultado en esa campaña. (RF-29 · CA-17.3)`
+Selecciona **5 Eliminar** y escribe `La Presidenta`. Luego selecciona **3 Listar**.
 
----
+Captura las filas `La Iguaná` y `Santa Elena` seguidas, sin espacio vacío en medio.
 
-## Figura 10.9 — Eliminar el del medio sin huecos
+### Figura 10.4 — Deshacer la eliminación
 
-1. Opción **5 Eliminar** → La Iguaná / 15/02/2024 / parte media
-2. Opción **3 Listar**
+Selecciona **6 Deshacer** y luego **3 Listar**.
 
-**Captura:** solo parte alta y parte baja, seguidas, sin fila vacía.
+Captura el mensaje de recuperación y las tres filas, con `La Presidenta` restaurada.
 
----
+### Figura 10.5 — Deshacer cuando no hay nada pendiente
 
-## Figura 10.10 — Deshacer
+Selecciona **6 Deshacer** otra vez, sin eliminar nada entre ambos intentos.
 
-1. Opción **6 Deshacer**
-2. Opción **3 Listar**
+Captura el mensaje `No hay nada que deshacer (RF-09)`. El programa debe seguir mostrando el menú, sin excepción ni cierre.
 
-**Captura:** MENSAJE de recuperación + otra vez tres filas.
+### Figura 10.6 — Cerrar, abrir y comprobar persistencia
 
----
+1. Selecciona **0 Volver** para regresar al menú principal.
+2. Selecciona **0 Salir** y espera el mensaje de guardado de ambos archivos.
+3. Vuelve a ejecutar `java -cp bin Main`.
+4. Selecciona **1 Quebradas**.
 
-## Figura 10.11 — Nada que deshacer
+Captura el listado con las mismas tres quebradas después de reiniciar. En el menú principal se debe indicar la cantidad cargada desde los archivos (RNF-03).
 
-1. Opción **6 Deshacer** otra vez.
+## Ubicación de la implementación de Quebradas
 
-**Captura:**  
-`(!) No hay nada que deshacer. (RF-39 · CA-22.2)`  
-(sin excepción ni cierre).
+| Comportamiento que se muestra | Archivo y método |
+|---|---|
+| Menú y listado que aparecen en las capturas | `src/quebrada/MenuQuebradas.java` — `dibujarPantalla`, `mostrarListado` |
+| Crear y rechazar duplicados | `src/quebrada/GestorQuebradas.java` — `registrar` |
+| Eliminar compactando el arreglo | `src/quebrada/GestorQuebradas.java` — `eliminar` |
+| Pila LIFO y recuperación / pila vacía | `src/quebrada/PilaDeshacerQuebradas.java` y `GestorQuebradas.deshacerEliminacion` |
+| Leer y guardar el archivo | `src/quebrada/PersistenciaQuebradas.java` — `cargar`, `guardar` |
+| Inicio, menú integrado y cierre | `src/Main.java` — `main` |
 
----
+Prueba automatizada equivalente, que usa un archivo temporal y no modifica `datos/`: `java -cp bin PruebaEscenariosQuebrada`.
 
-## Figura 10.12 — Persistencia
+## Escenarios de Resultados
 
-1. Opción **0 Volver**
-2. En el principal: **0 Salir**
-3. Ejecutar otra vez `java -cp bin Main`
-4. Opción **2** → **3 Listar**
-
-**Captura:** MENSAJE de carga al iniciar + listado con los 3 resultados.
-
----
-
-## Extra para sustentación (comparaciones)
-
-Con opción **10** (demostración) o con los tres de 15/02/2024:
-
-- **7** Comparar puntos → fecha 15/02/2024  
-- **8** Comparar temporadas → parte baja, año 2024 (tras cargar demostración)  
-- **9** Evolución histórica → parte baja  
+Los escenarios de Resultados se mantienen aparte porque son otra entidad. Se ejecutan desde el menú principal con la opción **2**. Pasos detallados en el documento de checklist y en `src/PruebaEscenarios.java`; su prueba automatizada es `java -cp bin PruebaEscenarios`.

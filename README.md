@@ -8,13 +8,13 @@ Medellín, Antioquia, Colombia
 | Integrante | Entidad | Estado en este repositorio |
 |---|---|---|
 | **Simón Marín de los Ríos** | Resultado de calidad | Implementado |
-| Willin Stewen Gutiérrez Santos | Quebrada | Pendiente de integrar |
+| Willin Stewen Gutiérrez Santos | Quebrada | Prototipo integrado; pendiente validar con el módulo original del integrante |
 
 ## ¿Qué hace este programa?
 
-Aplicación de **consola en Java** alineada a los **mockups de la sección 9** (Figuras 9.1 y 9.3): cabecera con HU/CU/RF, caja `MENSAJE`, campos con nombres del diccionario de datos y opciones Guardar / Buscar / Listar / Corregir / Eliminar / Deshacer / Volver.
+Aplicación de **consola en Java** alineada a los mockups de la sección 9: menú principal, pantalla de Quebradas (Figura 9.2) y pantalla de Resultados (Figura 9.3). Cada entidad usa arreglo con contador, pila propia y persistencia en archivo.
 
-Permite gestionar y comparar resultados de calidad del agua publicados por **RedRío** (quebrada **La Iguaná**). **No se conecta automáticamente** a RedRío ni al SIATA.
+Permite gestionar quebradas y resultados de calidad del agua. El registro de resultados valida la quebrada contra el módulo integrado. **No se conecta automáticamente** a RedRío ni al SIATA.
 
 ## Requisitos
 
@@ -35,8 +35,13 @@ SimonProyect/
 ├── src/
 │   ├── Main.java
 │   ├── integracion/
-│   │   ├── BuscadorQuebrada.java          ← contrato con el módulo de Willin
-│   │   └── AdaptadorQuebradaTemporal.java ← stub temporal para pruebas
+│   │   └── BuscadorQuebrada.java          ← contrato de validación entre entidades
+│   ├── quebrada/
+│   │   ├── Quebrada.java
+│   │   ├── GestorQuebradas.java           ← CRUDL con arreglo y contador
+│   │   ├── PilaDeshacerQuebradas.java
+│   │   ├── PersistenciaQuebradas.java
+│   │   └── MenuQuebradas.java
 │   └── resultado/
 │       ├── ResultadoCalidad.java
 │       ├── ValidadorResultado.java
@@ -47,7 +52,8 @@ SimonProyect/
 │       ├── UtilidadesConsola.java
 │       └── MenuResultados.java
 ├── datos/
-│   ├── resultados.txt                    ← persistencia real del programa
+│   ├── quebradas.txt                      ← persistencia de quebradas
+│   ├── resultados.txt                    ← persistencia de resultados
 │   └── resultados_demostracion_ejemplo.txt
 ├── docs/
 │   ├── ESCENARIOS_PRUEBA.md
@@ -65,14 +71,15 @@ Desde la carpeta raíz del proyecto (`SimonProyect`):
 ### Windows (PowerShell)
 
 ```powershell
-javac -encoding UTF-8 -d bin src\Main.java src\integracion\*.java src\resultado\*.java
+javac -encoding UTF-8 -d bin src\Main.java src\integracion\*.java src\quebrada\*.java src\resultado\*.java
 java -cp bin Main
 ```
 
 Verificación automática de los 6 escenarios (opcional, archivo de apoyo):
 
 ```powershell
-javac -encoding UTF-8 -d bin src\PruebaEscenarios.java src\Main.java src\integracion\*.java src\resultado\*.java
+javac -encoding UTF-8 -d bin src\PruebaEscenarios.java src\PruebaEscenariosQuebrada.java src\Main.java src\integracion\*.java src\quebrada\*.java src\resultado\*.java
+java -cp bin PruebaEscenariosQuebrada
 java -cp bin PruebaEscenarios
 ```
 
@@ -81,11 +88,22 @@ java -cp bin PruebaEscenarios
 ```powershell
 $env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.0.21.9-hotspot"
 $env:Path = "$env:JAVA_HOME\bin;$env:Path"
-javac -encoding UTF-8 -d bin src\Main.java src\integracion\*.java src\resultado\*.java
+javac -encoding UTF-8 -d bin src\Main.java src\integracion\*.java src\quebrada\*.java src\resultado\*.java
 java -cp bin Main
 ```
 
-## Funcionalidades (Figura 9.3)
+## Funcionalidades
+
+### Quebradas (Figura 9.2)
+
+1. Guardar con `nombre_quebrada` único y `numero_puntos` entre 1 y 3 (RF-01 a RF-04).
+2. Buscar por identificador o texto parcial (RF-05).
+3. Corregir `numero_puntos` sin cambiar el identificador (RF-06).
+4. Eliminar sin huecos y deshacer con pila LIFO (RF-07 y RF-09).
+5. Listar y calcular el total de puntos (RF-08).
+6. Cargar al iniciar y guardar al salir en `datos/quebradas.txt` (RNF-03).
+
+### Resultados (Figura 9.3)
 
 1. Guardar (RF-28 a RF-34)  
 2. Buscar (RF-35)  
@@ -109,10 +127,10 @@ Checklist fuera del código (capturas, predicción, bitácora IA): `docs/CHECKLI
 **Sí se utilizan (implementación manual):**
 
 - Arreglos tradicionales de objetos + contador
-- Pila propia (`PilaDeshacer`) con arreglo y contador
+- Pilas propias (`PilaDeshacerQuebradas`, `PilaDeshacer`) con arreglo y contador
 - Desplazamiento de elementos al eliminar
 - Control de capacidad
-- Persistencia en archivo de texto (`datos/resultados.txt`)
+- Persistencia en archivos de texto (`datos/quebradas.txt`, `datos/resultados.txt`)
 
 ## Datos de demostración
 
@@ -130,15 +148,15 @@ Fuentes de referencia del proyecto:
 - RedRío: https://www.metropol.gov.co/ambiental/recurso-hidrico/Paginas/aguas-superficiales/red-rio.aspx  
 - SIATA: https://geoportal.siata.gov.co/
 
-## Pruebas y capturas (sección 10.4)
+## Pruebas y capturas (secciones 10.3 / 10.8 de la guía)
 
 Instrucciones paso a paso: [`docs/ESCENARIOS_PRUEBA.md`](docs/ESCENARIOS_PRUEBA.md)
 
 Tabla de ubicación del código: [`docs/TABLA_FUNCIONALIDADES.md`](docs/TABLA_FUNCIONALIDADES.md)
 
-## Integración con Quebrada
+## Integración entre entidades
 
-Ver: [`docs/INTEGRACION_QUEBRADA.md`](docs/INTEGRACION_QUEBRADA.md)
+`GestorQuebradas` implementa `BuscadorQuebrada`; `GestorResultados` lo consulta antes de guardar cada resultado. Detalles: [`docs/INTEGRACION_QUEBRADA.md`](docs/INTEGRACION_QUEBRADA.md).
 
 Contrato requerido:
 
@@ -172,3 +190,4 @@ git push -u origin main
 - Explique la **pila LIFO** en `PilaDeshacer`.
 - Explique por qué el orden de categorías **no es alfabético** (`ValidadorResultado.ordenCategoria`).
 - Explique la validación de quebrada vía `BuscadorQuebrada` (RF-32).
+- Explique el CRUDL, el arreglo con contador y la pila propia del módulo de Quebradas.

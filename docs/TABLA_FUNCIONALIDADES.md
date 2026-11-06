@@ -1,31 +1,44 @@
-# Tabla de ubicación exacta de funcionalidades
+# Tabla de ubicación de funcionalidades
 
-Líneas del código **actual** en `src/` (después del ajuste al mockup 9.3 y cabeceras 10.7).
+Líneas actuales del código. Las Figuras 10.1–10.6 corresponden a Quebradas y son las capturas descritas en `ESCENARIOS_PRUEBA.md`.
 
-| # | Funcionalidad | Archivo | Método | Línea inicial | Línea final | Qué demuestra | Escenario / captura |
-|---|---|---|---|---|---|---|---|
-| 1 | Registro (Guardar) | `resultado/GestorResultados.java` | `registrar` | 72 | 138 | Inserta en arreglo, valida y guarda | Fig. 10.7 — opción **1** |
-| 2 | Validación de duplicados | `resultado/GestorResultados.java` | bloque RF-29 dentro de `registrar` | 129 | 131 | Mensaje mockup `(RF-29 · CA-17.3)` | Fig. 10.8 |
-| 3 | Listado | `resultado/MenuResultados.java` | `opcionListar` | 254 | 285 | Columnas del diccionario + promedio | Fig. 10.7 / 10.9 — opción **3** |
-| 4 | Eliminación sin huecos | `resultado/GestorResultados.java` | `eliminar` (desplazamiento 226–228) | 216 | 237 | Compacta el arreglo | Fig. 10.9 — opción **5** |
-| 5 | Pila para deshacer | `resultado/PilaDeshacer.java` | `apilar` / `desapilar` | 45 / 60 | 57 / 68 | Pila LIFO propia | Fig. 10.10 — opción **6** |
-| 6 | Mensaje si no hay nada que deshacer | `resultado/GestorResultados.java` | `deshacerEliminacion` | 242 | 244 | `(!) No hay nada que deshacer. (RF-39 · CA-22.2)` | Fig. 10.11 |
-| 7 | Guardado en archivos | `resultado/PersistenciaResultados.java` | `guardar` | 90 | 120 | Escribe `datos/resultados.txt` | Tras cada cambio; Fig. 10.12 |
-| 8 | Recuperación al iniciar | `resultado/PersistenciaResultados.java` | `cargar` | 37 | 87 | Lee al arrancar (RNF-03 · CA-17.2) | Fig. 10.12 |
-| 9 | Comparación entre puntos | `resultado/ComparadorCalidad.java` | `compararEntrePuntos` | 27 | 55 | Alta → media → baja (RF-64) | Opción **7** |
-| 10 | Comparación entre temporadas | `resultado/ComparadorCalidad.java` | `compararEntreTemporadas` | 60 | 148 | Seca vs lluvias (RF-63/65) | Opción **8** |
-| 11 | Evolución histórica | `resultado/ComparadorCalidad.java` | `evolucionHistorica` | 151 | 227 | Orden cronológico + MEJORA/EMPEORA | Opción **9** |
-| 12 | Validación de quebradas | `GestorResultados.java` + `BuscadorQuebrada.java` | RF-32 en `registrar` / `existeQuebrada` | 80–82 / 20 | 82 / 20 | `(!) Esa quebrada no existe. (RF-32 · CA-17.6)` | Guardar quebrada inventada |
+## Quebradas — capturas 10.1 a 10.6
 
-## Mockup y cabeceras (guía 10.7)
-
-| Elemento | Archivo | Líneas / zona |
+| Evidencia / función | Archivo y línea | Qué demuestra |
 |---|---|---|
-| Pantalla Figura 9.3 | `MenuResultados.java` | `dibujarPantalla` — título, MENSAJE, opciones 1–6 y 0 (~111–160) |
-| Pantalla Figura 9.1 | `Main.java` | `mostrarPantallaPrincipal` |
-| Cabecera de clase 10.7 | Todas las clases en `src/` | Bloque `/* Proyecto … Estructuras */` al inicio |
-| Orden ICA no alfabético | `ValidadorResultado.java` | `ordenCategoria` 59–80 |
+| Menú, mensaje y pantalla de Quebradas | [`MenuQuebradas.java`](../src/quebrada/MenuQuebradas.java#L80) | Encabezado, caja MENSAJE y opciones |
+| Listado y total de puntos — Fig. 10.1 | [`MenuQuebradas.java`](../src/quebrada/MenuQuebradas.java#L120) | `nombre_quebrada`, `numero_puntos`, total y quebradas con menos de 3 puntos |
+| Crear — Fig. 10.1 | [`GestorQuebradas.java`](../src/quebrada/GestorQuebradas.java#L53) | Inserta en arreglo y persiste |
+| Rechazar nombre repetido — Fig. 10.2 | [`GestorQuebradas.java`](../src/quebrada/GestorQuebradas.java#L61) | Mensaje RF-02 · CA-01.3; no aumenta la cantidad |
+| Eliminar del medio y compactar — Fig. 10.3 | [`GestorQuebradas.java`](../src/quebrada/GestorQuebradas.java#L127) | Elimina desplazando el arreglo |
+| Deshacer y mensaje de pila vacía — Fig. 10.4/10.5 | [`GestorQuebradas.java`](../src/quebrada/GestorQuebradas.java#L149) | Recupera la última eliminación; informa si no hay pendientes |
+| Operaciones de pila LIFO | [`PilaDeshacerQuebradas.java`](../src/quebrada/PilaDeshacerQuebradas.java#L43) | Apilar/desapilar una quebrada sin `Stack` |
+| Persistencia de Quebradas — Fig. 10.6 | [`PersistenciaQuebradas.java`](../src/quebrada/PersistenciaQuebradas.java#L35) | Cargar al iniciar y guardar al salir |
+| Integración con Resultados | [`GestorQuebradas.java`](../src/quebrada/GestorQuebradas.java#L206) | `existeQuebrada` implementa el contrato de búsqueda |
+| Inicio, carga y cierre de ambos módulos | [`Main.java`](../src/Main.java#L30) | Menú principal, persistencia y navegación |
+| Prueba automatizada de las seis capturas | [`PruebaEscenariosQuebrada.java`](../src/PruebaEscenariosQuebrada.java#L22) | 6 escenarios y verificaciones adicionales |
 
-## Fuera del código
+## Resultados — pruebas del módulo existente
 
-Ver `docs/CHECKLIST_ENTREGA_DOCENTE.md` (capturas, predicción a mano, bitácora IA, enlace GitHub, unión con Willin).
+| Funcionalidad | Archivo y línea | Qué demuestra |
+|---|---|---|
+| Registro y validaciones | [`GestorResultados.java`](../src/resultado/GestorResultados.java#L72) | Inserta resultados y valida quebrada, punto, campaña e ICA |
+| Rechazo de resultados duplicados | [`GestorResultados.java`](../src/resultado/GestorResultados.java#L129) | RF-29 · CA-17.3 |
+| Listado y promedio ICA | [`MenuResultados.java`](../src/resultado/MenuResultados.java#L245) | Columnas del diccionario y promedio |
+| Eliminar sin huecos | [`GestorResultados.java`](../src/resultado/GestorResultados.java#L216) | Compacta el arreglo |
+| Deshacer y pila vacía | [`GestorResultados.java`](../src/resultado/GestorResultados.java#L242) | RF-39 · CA-22.1 a CA-22.3 |
+| Persistencia | [`PersistenciaResultados.java`](../src/resultado/PersistenciaResultados.java#L37) | Lee y escribe `datos/resultados.txt` |
+| Prueba automatizada | [`PruebaEscenarios.java`](../src/PruebaEscenarios.java#L24) | 6 escenarios de Resultados |
+
+## Mockups y cabeceras
+
+| Elemento | Archivo y línea |
+|---|---|
+| Menú principal, Figura 9.1 | [`Main.java`](../src/Main.java#L93) |
+| Pantalla de Quebradas, Figura 9.2 | [`MenuQuebradas.java`](../src/quebrada/MenuQuebradas.java#L80) |
+| Pantalla de Resultados, Figura 9.3 | [`MenuResultados.java`](../src/resultado/MenuResultados.java#L106) |
+| Orden de categorías ICA | [`ValidadorResultado.java`](../src/resultado/ValidadorResultado.java#L59) |
+
+## Entrega fuera del código
+
+Las capturas reales, la predicción manuscrita y la bitácora deben agregarse manualmente al documento del curso. Consulta [`CHECKLIST_ENTREGA_DOCENTE.md`](CHECKLIST_ENTREGA_DOCENTE.md).

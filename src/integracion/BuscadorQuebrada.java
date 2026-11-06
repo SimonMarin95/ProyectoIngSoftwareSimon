@@ -1,6 +1,6 @@
 /* ===========================================================
  * Proyecto       : Monitoreo de calidad del agua — Quebrada La Iguaná (RedRío / SIATA)
- * Entidad        : Contrato de integración con Quebrada
+ * Entidad        : Contrato de validación entre Quebrada y Resultado
  * Programado por : Simón Marín de los Ríos
  * Fecha          : 06/11/2026
  * HU-17 / RF-32 / CA-17.6
@@ -11,7 +11,7 @@
 package integracion;
 
 /**
- * Contrato que el módulo de Resultado necesita del módulo de Quebrada (Willin).
+ * Contrato que el módulo de Resultado necesita del módulo de Quebrada.
  * No implementa el CRUD de quebradas: solo consulta existencia.
  */
 public interface BuscadorQuebrada {

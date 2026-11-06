@@ -14,8 +14,6 @@ package resultado;
 import java.util.Locale;
 import java.util.Scanner;
 
-import integracion.AdaptadorQuebradaTemporal;
-
 /**
  * Pantalla de Resultados de calidad según el mockup de la Figura 9.3.
  */
@@ -24,15 +22,12 @@ public class MenuResultados {
     private GestorResultados gestor;
     private ComparadorCalidad comparador;
     private Scanner sc;
-    private AdaptadorQuebradaTemporal adaptadorQuebrada;
     private String mensaje;
 
-    public MenuResultados(GestorResultados gestor, Scanner sc,
-                          AdaptadorQuebradaTemporal adaptadorQuebrada) {
+    public MenuResultados(GestorResultados gestor, Scanner sc) {
         this.gestor = gestor;
         this.comparador = new ComparadorCalidad(gestor);
         this.sc = sc;
-        this.adaptadorQuebrada = adaptadorQuebrada;
         this.mensaje = "Listo. Elija una opción.";
     }
 
@@ -155,10 +150,6 @@ public class MenuResultados {
         System.out.println("  RF-38 No hay resultados registrados");
         System.out.println("  RF-39 No hay nada que deshacer");
         System.out.println("-------------------------------------------------------------------------------");
-        if (adaptadorQuebrada != null) {
-            System.out.println(" Quebradas disponibles (adaptador temporal): "
-                    + adaptadorQuebrada.listarNombres());
-        }
     }
 
     // RF-38 · CA-21.1 / CA-21.2 — listado con nombres del diccionario de datos

@@ -1,93 +1,37 @@
-# Integración con el módulo de Quebrada (Willin)
+# Integración de Quebradas y Resultados
 
-## Estado actual
+## Estado
 
-El módulo de **Resultado de calidad** (Simón) está funcional de forma independiente.  
-La existencia de una quebrada se valida con la interfaz `BuscadorQuebrada`.
+El proyecto contiene los dos módulos en el mismo menú. La opción **1** abre el CRUDL de Quebradas y la opción **2** abre Resultados. El módulo Quebradas ya no usa el adaptador temporal de demostración.
 
-Mientras el código de Willin no está unido, se usa:
+## Contrato de validación
 
-- `integracion.AdaptadorQuebradaTemporal`  
-  Contiene solo nombres de demostración (`La Iguaná`, `La Presidenta`, `Santa Elena`).  
-  **No es** el CRUD de Quebrada.
-
-## Qué método necesita Resultado de calidad
-
-| Elemento | Detalle |
-|---|---|
-| Interfaz | `integracion.BuscadorQuebrada` |
-| Método | `boolean existeQuebrada(String nombreQuebrada)` |
-| Parámetro | Nombre exacto de la quebrada (ej. `"La Iguaná"`) |
-| Retorno | `true` si existe; `false` si no existe o el nombre está vacío |
-| Requisito | RF-32 · CA-17.6 |
-
-## Cómo se usa hoy
-
-En `Main.java` se crea el adaptador temporal y se inyecta en el gestor:
+`quebrada.GestorQuebradas` implementa `integracion.BuscadorQuebrada`:
 
 ```java
-AdaptadorQuebradaTemporal adaptadorTemporal = new AdaptadorQuebradaTemporal();
-BuscadorQuebrada buscadorQuebrada = adaptadorTemporal;
-GestorResultados gestor = new GestorResultados(100, rutaDatos, buscadorQuebrada);
+boolean existeQuebrada(String nombreQuebrada)
 ```
 
-En `GestorResultados.registrar(...)` se llama:
+`Main` inyecta el gestor real al crear `resultado.GestorResultados`. Antes de registrar un resultado, `GestorResultados.registrar(...)` consulta esa interfaz y rechaza el registro si el nombre no existe (RF-32 · CA-17.6).
 
-```java
-if (!buscadorQuebrada.existeQuebrada(nombreQuebrada)) {
-    // rechaza el registro
-}
-```
+## Operaciones de Quebradas
 
-## Cómo integrar cuando Willin entregue su módulo
+| Opción | Operación | Requisito |
+|---|---|---|
+| 1 | Guardar `nombre_quebrada` y `numero_puntos` (1 a 3); rechazar identificadores repetidos | RF-01 a RF-04 |
+| 2 | Buscar por nombre completo o texto parcial | RF-05 |
+| 3 | Listar y sumar `numero_puntos` | RF-08 |
+| 4 | Corregir `numero_puntos`; el nombre, por ser identificador, no se cambia | RF-06 |
+| 5 | Eliminar compactando el arreglo | RF-07 |
+| 6 | Deshacer la última eliminación con una pila LIFO propia | RF-09 |
+| 0 | Volver al menú principal | — |
 
-### Opción recomendada (adaptador)
+La entidad usa arreglo fijo con contador, pila propia y archivo de texto. No usa `ArrayList`, `LinkedList` ni `java.util.Stack`.
 
-1. Willin expone un método de búsqueda, por ejemplo:  
-   `public boolean buscarPorNombre(String nombre)` en su `GestorQuebradas`.
-2. Crear una clase `AdaptadorQuebradaWillin` que implemente `BuscadorQuebrada` y delegue:
+## Persistencia
 
-```java
-package integracion;
+- Quebradas: `datos/quebradas.txt`, una línea por registro: `nombre_quebrada|numero_puntos`.
+- Resultados: `datos/resultados.txt`, administrado por el módulo Resultado.
+- Ambos módulos se cargan al iniciar y se guardan al salir.
 
-public class AdaptadorQuebradaWillin implements BuscadorQuebrada {
-    private GestorQuebradas gestorQuebradas; // clase de Willin
-
-    public AdaptadorQuebradaWillin(GestorQuebradas gestorQuebradas) {
-        this.gestorQuebradas = gestorQuebradas;
-    }
-
-    @Override
-    public boolean existeQuebrada(String nombreQuebrada) {
-        return gestorQuebradas.buscarPorNombre(nombreQuebrada); // ajustar al nombre real
-    }
-}
-```
-
-3. En `Main.java`, reemplazar el adaptador temporal por el de Willin.
-4. Unificar el menú principal: opción 1 = Resultados, opción 2 = Quebradas.
-
-### Archivos a modificar al unir
-
-| Archivo | Cambio |
-|---|---|
-| `src/Main.java` | Instanciar el gestor de Willin y el nuevo adaptador |
-| `src/integracion/AdaptadorQuebradaWillin.java` | Crear (nuevo) |
-| Menú principal | Activar la opción real de Quebrada |
-| (Opcional) | Eliminar o dejar de usar `AdaptadorQuebradaTemporal` |
-
-### Archivos que NO se deben duplicar
-
-- No reimplementar el CRUD de Quebrada dentro del paquete `resultado`.
-- No copiar la pila/archivo de Willin dentro de este módulo.
-
-## Prueba de integración sugerida
-
-1. En el módulo de Willin, crear la quebrada `La Iguaná`.
-2. En Resultados, registrar un ICA para `La Iguaná` → debe aceptar.
-3. Intentar registrar en `Quebrada Inexistente` → debe rechazar con mensaje RF-32.
-
-## Importante para el documento
-
-No afirmar que la integración está completa hasta probar ambos módulos juntos.  
-Hoy el contrato está listo; la unión real depende del código de Willin.
+Si luego se integra el código original de otro integrante, debe conservarse el contrato `BuscadorQuebrada` y comprobar que la búsqueda use los mismos nombres persistidos por Quebradas.
